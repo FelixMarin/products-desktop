@@ -1,9 +1,11 @@
-from tkinter import ttk
-from tkinter import *
-
 import sqlite3
+from tkinter import *
+from tkinter import ttk
+
 
 class Product:
+
+    db_name = 'database.db'
 
     def __init__(self,window):
         self.wind = window
@@ -29,9 +31,23 @@ class Product:
         self.tree.grid(row = 4, column = 0, columnspan = 2)
         self.tree.heading('#0', text = 'Name', anchor = CENTER)
         self.tree.heading('#1', text = 'Price', anchor = CENTER)
-
+    
         #button add product
         ttk.Button(frame, text = 'Save product').grid(row = 3, columnspan = 2, sticky = W + E)
+
+        self.get_products()
+
+    def run_query(self, query, parameters = ()):
+        conn = sqlite3.connect(self.db_name)
+        cursor = conn.cursor()
+        result =cursor.execute(query, parameters)
+        conn.commit()
+        return result
+
+    def get_products(self):
+        query = 'SELECT * from product order by name desc' 
+        db_rows = self.run_query(query)
+        print(db_rows)
 
 if __name__ == '__main__':
   window = Tk()
